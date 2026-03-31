@@ -1,0 +1,187 @@
+services:
+
+# ---------------- REDIS ----------------
+
+* type: redis
+  name: vg-redis
+  ipAllowList: []
+
+# ---------------- AUTH SERVICE ----------------
+
+* type: web
+  name: auth-service
+  env: docker
+  plan: free
+  dockerfilePath: ./auth-service/Dockerfile
+  envVars:
+
+  * key: SERVER_PORT
+    value: 5002
+  * key: DB_HOST
+    value: ep-proud-block-acxjqli5-pooler.sa-east-1.aws.neon.tech
+  * key: DB_NAME
+    value: vg-ms-autentication
+  * key: DB_USER
+    value: neondb_owner
+  * key: DB_PASSWORD
+    sync: false
+  * key: DATABASE_URL
+    value: r2dbc:postgresql://ep-proud-block-acxjqli5-pooler.sa-east-1.aws.neon.tech:5432/vg-ms-autentication?sslmode=require
+  * key: KEYCLOAK_URL
+    value: https://lab.vallegrande.edu.pe/keycloak
+  * key: KEYCLOAK_REALM
+    value: sipreb
+  * key: KEYCLOAK_CLIENT_ID
+    value: sipreb-backend
+  * key: KEYCLOAK_CLIENT_SECRET
+    sync: false
+  * key: REDIS_URL
+    fromService:
+    type: redis
+    name: vg-redis
+    property: connectionString
+  * key: JWT_SECRET
+    sync: false
+
+# ---------------- CONFIG SERVICE ----------------
+
+* type: web
+  name: configurationservice
+  env: docker
+  plan: free
+  dockerfilePath: ./configurationservice/Dockerfile
+  envVars:
+
+  * key: SERVER_PORT
+    value: 5004
+  * key: DB_URL
+    value: r2dbc:postgresql://ep-summer-cloud-adbsahn8-pooler.c-2.us-east-1.aws.neon.tech/neondb
+  * key: DB_USERNAME
+    value: neondb_owner
+  * key: DB_PASSWORD
+    sync: false
+  * key: KEYCLOAK_ISSUER_URI
+    value: https://lab.vallegrande.edu.pe/keycloak/realms/sipreb
+  * key: REDIS_URL
+    fromService:
+    type: redis
+    name: vg-redis
+    property: connectionString
+
+# ---------------- PATRIMONIO ----------------
+
+* type: web
+  name: patrimonio-service
+  env: docker
+  plan: free
+  dockerfilePath: ./patrimonio-service/Dockerfile
+  envVars:
+
+  * key: SERVER_PORT
+    value: 5003
+  * key: DB_URL
+    value: r2dbc:postgresql://ep-snowy-dream-ad4r62wl-pooler.c-2.us-east-1.aws.neon.tech:5432/neondb
+  * key: DB_USERNAME
+    value: neondb_owner
+  * key: DB_PASSWORD
+    sync: false
+  * key: KEYCLOAK_ISSUER_URI
+    value: https://lab.vallegrande.edu.pe/keycloak/realms/sipreb
+
+# ---------------- MOVEMENT ----------------
+
+* type: web
+  name: movement-service
+  env: docker
+  plan: free
+  dockerfilePath: ./movement-service/Dockerfile
+  envVars:
+
+  * key: SERVER_PORT
+    value: 5005
+  * key: DB_URL
+    value: r2dbc:postgresql://ep-small-pine-a4vgqevg-pooler.us-east-1.aws.neon.tech/neondb
+  * key: DB_USERNAME
+    value: neondb_owner
+  * key: DB_PASSWORD
+    sync: false
+  * key: USER_SERVICE_URL
+    value: https://auth-service.onrender.com
+  * key: PATRIMONIO_SERVICE_URL
+    value: https://patrimonio-service.onrender.com
+
+# ---------------- INVENTORY ----------------
+
+* type: web
+  name: inventory-service
+  env: docker
+  plan: free
+  dockerfilePath: ./inventory-service/Dockerfile
+  envVars:
+
+  * key: SERVER_PORT
+    value: 5006
+  * key: DATABASE_URL
+    value: r2dbc:postgresql://ep-fragrant-cell-a4yrhw50-pooler.us-east-1.aws.neon.tech:5432/neondb
+  * key: DB_USERNAME
+    value: neondb_owner
+  * key: DB_PASSWORD
+    sync: false
+  * key: REDIS_URL
+    fromService:
+    type: redis
+    name: vg-redis
+    property: connectionString
+  * key: ASSET_URL
+    value: https://patrimonio-service.onrender.com
+  * key: CONFIG_URL
+    value: https://configurationservice.onrender.com
+  * key: USER_URL
+    value: https://auth-service.onrender.com
+
+# ---------------- MAINTENANCE ----------------
+
+* type: web
+  name: ms-maintenanceService
+  env: docker
+  plan: free
+  dockerfilePath: ./ms-maintenanceService/Dockerfile
+  envVars:
+
+  * key: SERVER_PORT
+    value: 5007
+  * key: DB_URL
+    value: r2dbc:postgresql://ep-misty-haze-ac4ozmj7-pooler.sa-east-1.aws.neon.tech:5432/vg-ms-maintenance
+  * key: DB_USERNAME
+    value: neondb_owner
+  * key: DB_PASSWORD
+    sync: false
+  * key: REDIS_URL
+    fromService:
+    type: redis
+    name: vg-redis
+    property: connectionString
+
+# ---------------- API GATEWAY ----------------
+
+* type: web
+  name: api-gateway
+  env: docker
+  plan: free
+  dockerfilePath: ./api-gateway/Dockerfile
+  envVars:
+
+  * key: SERVER_PORT
+    value: 5000
+  * key: AUTH_SERVICE_URL
+    value: https://auth-service.onrender.com
+  * key: CONFIG_SERVICE_URL
+    value: https://configurationservice.onrender.com
+  * key: MOVEMENT_SERVICE_URL
+    value: https://movement-service.onrender.com
+  * key: PATRIMONIO_SERVICE_URL
+    value: https://patrimonio-service.onrender.com
+  * key: INVENTORY_SERVICE_URL
+    value: https://inventory-service.onrender.com
+  * key: MANTENIMIENTO_SERVICE_URL
+    value: https://ms-maintenanceService.onrender.com
