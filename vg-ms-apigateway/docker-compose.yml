@@ -1,0 +1,157 @@
+version: "3.8"
+
+services:
+
+  # --- MS-CONFIGURATION ---
+  configurationservice:
+    image: jossuetorres/vg-ms-configuration-service
+    container_name: configurationservice
+    environment:
+      - SERVER_PORT=5004
+      - DB_URL=r2dbc:postgresql://ep-summer-cloud-adbsahn8-pooler.c-2.us-east-1.aws.neon.tech/neondb
+      - DB_USERNAME=neondb_owner
+      - DB_PASSWORD=npg_m0q6NuUCdytb
+      - CORS_ALLOWED_ORIGINS=http://localhost:4200,http://localhost:3000,http://localhost:5173
+      - KEYCLOAK_ISSUER_URI=https://lab.vallegrande.edu.pe/keycloak/realms/sipreb
+      - REDIS_URL=rediss://default:gQAAAAAAATRdAAIncDI5ODI3NDY2YzRkMGY0OTIwYjk1OTc1MzQ0NTkxOTQ3NXAyNzg5NDE@casual-honeybee-78941.upstash.io:6379
+      - REDIS_ENABLED=true
+    networks:
+      - vg-network
+
+  # --- MS-MOVEMENT ---
+  movement-service:
+    image: angie14/vg-ms-movementservice:latest
+    container_name: movement-service
+    ports:
+      - "5005:5005"
+    environment:
+      - SERVER_PORT=5005
+      - DB_URL=r2dbc:postgresql://ep-small-pine-a4vgqevg-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      - DB_USERNAME=neondb_owner
+      - DB_PASSWORD=npg_XuT8ro0iUKne
+      - KEYCLOAK_ISSUER_URI=https://lab.vallegrande.edu.pe/keycloak/realms/sipreb
+      - KEYCLOAK_CLIENT_SECRET=KtwBQJLG5CKriZH2A0pFyO734GdFYmGu
+      - USER_SERVICE_URL=http://auth-service:5002
+      - PATRIMONIO_SERVICE_URL=http://patrimonio-service:5003/api/v1
+    networks:
+      - vg-network
+
+  # --- MS-MAINTENANCE ---
+  ms-maintenanceService:
+    image: henrylunazco/vg-ms-maintenamceservice:v2
+    container_name: ms-maintenanceService
+    environment:
+      - SERVER_PORT=5007
+      - DB_URL=r2dbc:postgresql://ep-misty-haze-ac4ozmj7-pooler.sa-east-1.aws.neon.tech:5432/vg-ms-maintenance?sslmode=require
+      - DB_USERNAME=neondb_owner
+      - DB_PASSWORD=npg_0eYETFuVoZ1w
+      - KEYCLOAK_URL=https://lab.vallegrande.edu.pe/keycloak
+      - KEYCLOAK_REALM=sipreb
+      - REDIS_URL=rediss://default:gQAAAAAAATRdAAIncDI5ODI3NDY2YzRkMGY0OTIwYjk1OTc1MzQ0NTkxOTQ3NXAyNzg5NDE@casual-honeybee-78941.upstash.io:6379
+    networks:
+      - vg-network
+
+  # --- MS-AUTH ---
+  auth-service:
+    image: henrylunazco/vg-ms-auth-service:v2
+    container_name: auth-service
+    environment:
+      - DB_HOST=ep-proud-block-acxjqli5-pooler.sa-east-1.aws.neon.tech
+      - DB_NAME=vg-ms-autentication
+      - DB_USER=neondb_owner
+      - DB_PASSWORD=npg_0eYETFuVoZ1w
+      - DATABASE_URL=r2dbc:postgresql://ep-proud-block-acxjqli5-pooler.sa-east-1.aws.neon.tech:5432/vg-ms-autentication?sslmode=require&preparedStatementCacheQueries=0&connectTimeout=30000
+      - KEYCLOAK_URL=https://lab.vallegrande.edu.pe/keycloak
+      - KEYCLOAK_REALM=sipreb
+      - KEYCLOAK_CLIENT_ID=sipreb-backend
+      - KEYCLOAK_CLIENT_SECRET=6nx2O6hLT5iWimpk3DX4mm8gX51RcC2d
+      - KEYCLOAK_ADMIN_SECRET=O0pvzsvJNQ7MFNSid5kCVkK1sGe8hBcd
+      - REDIS_URL=rediss://default:gQAAAAAAATRdAAIncDI5ODI3NDY2YzRkMGY0OTIwYjk1OTc1MzQ0NTkxOTQ3NXAyNzg5NDE@casual-honeybee-78941.upstash.io:6379
+      - AUTH_REDIS_TTL=300s
+      - REDIS_SSL=true
+      - JWT_SECRET=your-secret-key-here-min-256-bits-change-in-production
+      - JWT_EXPIRATION=3600000
+      - JWT_REFRESH_EXPIRATION=86400000
+      - SERVER_PORT=5002
+      - CONFIGURATION_SERVICE_URL=http://ms-maintenanceService:5007
+      - ROLE_EXPIRATION_ENABLED=true
+      - ROLE_EXPIRATION_CRON=0 0 0 * * *
+      - USER_REACTIVATION_ENABLED=true
+      - USER_REACTIVATION_CRON=0 0 * * * *
+      - USER_UNBLOCK_ENABLED=true
+      - USER_UNBLOCK_CRON=0 */5 * * * *
+      - LOGGING_LEVEL_ROOT=INFO
+      - TIMEZONE=America/Lima
+    networks:
+      - vg-network
+
+  # --- MS-INVENTORY ---
+  inventory-service:
+    image: hilaryvivanco/vg-ms-inventarioservice:v2
+    container_name: inventory-service
+    environment:
+      - SERVER_PORT=5006
+      - DATABASE_URL=r2dbc:postgresql://ep-fragrant-cell-a4yrhw50-pooler.us-east-1.aws.neon.tech:5432/neondb?sslMode=require&channelBinding=require
+      - DB_USERNAME=neondb_owner
+      - DB_PASSWORD=npg_yeJFA58BMUfS
+      - REDIS_URL=rediss://default:gQAAAAAAATRdAAIncDI5ODI3NDY2YzRkMGY0OTIwYjk1OTc1MzQ0NTkxOTQ3NXAyNzg5NDE@casual-honeybee-78941.upstash.io:6379
+      - KEYCLOAK_URL=https://lab.vallegrande.edu.pe/keycloak/realms/sipreb
+      - ASSET_URL=http://patrimonio-service:5003
+      - CONFIG_URL=http://configurationservice:5004
+      - USER_URL=http://auth-service:5002
+    networks:
+      - vg-network
+
+  # --- MS-PATRIMONIO ---
+  patrimonio-service:
+    image: williams31/vg-ms-patrimonioservice:latest
+    container_name: patrimonio-service
+    environment:
+      - DB_URL=r2dbc:postgresql://neondb_owner:npg_JD4jeC7SIPom@ep-snowy-dream-ad4r62wl-pooler.c-2.us-east-1.aws.neon.tech:5432/neondb?sslMode=VERIFY_FULL&preparedStatementCacheQueries=0
+      - DB_USERNAME=neondb_owner
+      - DB_PASSWORD=npg_JD4jeC7SIPom
+      - DB_POOL_ENABLED=true
+      - DB_POOL_INITIAL_SIZE=5
+      - DB_POOL_MAX_SIZE=20
+      - DB_POOL_MAX_IDLE=30m
+      - KEYCLOAK_ISSUER_URI=https://lab.vallegrande.edu.pe/keycloak/realms/sipreb
+      - KEYCLOAK_JWKS_URI=https://lab.vallegrande.edu.pe/keycloak/realms/sipreb/protocol/openid-connect/certs
+      - SERVER_PORT=5003
+      - APP_NAME=patrimonio-service
+      - MS_CONFIG_URL=http://configurationservice:5004/api/v1
+      - MS_AUTH_URL=http://auth-service:5002/api/v1
+      - MS_MOVEMENTS_URL=https://lab.vallegrande.edu.pe/movement/api/v1
+    networks:
+      - vg-network
+
+  # --- API GATEWAY ---
+  api-gateway:
+    image: angie14/apigateway:latest
+    container_name: api-gateway
+    ports:
+      - "5000:5000"
+    environment:
+      - KEYCLOAK_URL=https://lab.vallegrande.edu.pe/keycloak
+      - KEYCLOAK_REALM=sipreb
+      - KEYCLOAK_CLIENT_ID=sipreb-backend
+      - KEYCLOAK_CLIENT_SECRET=6nx2O6hLT5iWimpk3DX4mm8gX51RcC2d
+      - REDIS_URL=rediss://default:gQAAAAAAATRdAAIncDI5ODI3NDY2YzRkMGY0OTIwYjk1OTc1MzQ0NTkxOTQ3NXAyNzg5NDE@casual-honeybee-78941.upstash.io:6379
+      - SERVER_PORT=5000
+      - AUTH_SERVICE_URL=http://auth-service:5002
+      - CONFIG_SERVICE_URL=http://configurationservice:5004
+      - MOVEMENT_SERVICE_URL=http://movement-service:5005
+      - PATRIMONIO_SERVICE_URL=http://patrimonio-service:5003
+      - INVENTORY_SERVICE_URL=http://inventory-service:5006
+      - MANTENIMIENTO_SERVICE_URL=http://ms-maintenanceService:5007
+      - CORS_ALLOWED_ORIGINS=http://localhost:5173,https://lab.vallegrande.edu.pe/sipreb
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,metrics
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS=always
+      - REDIS_SSL=true
+    depends_on:
+      - auth-service
+    networks:
+      - vg-network
+
+networks:
+  vg-network:
+    driver: bridge

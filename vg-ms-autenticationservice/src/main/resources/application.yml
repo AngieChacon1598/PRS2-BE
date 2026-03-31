@@ -1,0 +1,106 @@
+spring:
+  application:
+    name: AuthenticationService
+
+  # Configuración R2DBC para Neon PostgreSQL
+  r2dbc:
+    url: ${DATABASE_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    pool:
+      initial-size: 1
+      min-idle: 1
+      max-size: 10
+      max-idle-time: 1m
+      max-life-time: 5m
+      validation-query: SELECT 1
+
+  data:
+    redis:
+      url: ${REDIS_URL}
+      ssl:
+        enabled: ${REDIS_SSL}
+      ttl: ${AUTH_REDIS_TTL}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}
+
+  # Configuración de inicialización de base de datos
+  sql:
+    init:
+      mode: never
+
+# Configuración personalizada de Keycloak para el ms-auth
+keycloak:
+  url: ${KEYCLOAK_URL}
+  realm: ${KEYCLOAK_REALM}
+  client-id: ${KEYCLOAK_CLIENT_ID}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET}
+  admin-realm: ${KEYCLOAK_ADMIN_REALM}
+  admin-client-id: ${KEYCLOAK_ADMIN_CLIENT_ID}
+  admin-client-secret: ${KEYCLOAK_ADMIN_SECRET}
+
+# Configuración de otros microservicios
+services:
+  configuration-service:
+    url: ${CONFIGURATION_SERVICE_URL}
+
+# Configuración del servidor
+server:
+  port: ${SERVER_PORT}
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on_param
+    include-exception: false
+
+# Configuración de zona horaria
+timezone:
+  default: ${TIMEZONE}
+
+# Configuración de Schedulers
+scheduler:
+  role-expiration:
+    enabled: ${ROLE_EXPIRATION_ENABLED}
+    cron: ${ROLE_EXPIRATION_CRON}
+  user-reactivation:
+    enabled: ${USER_REACTIVATION_ENABLED}
+    cron: ${USER_REACTIVATION_CRON}
+  user-unblock:
+    enabled: ${USER_UNBLOCK_ENABLED}
+    cron: ${USER_UNBLOCK_CRON}
+
+# Configuración JWT
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION}
+
+# Configuración de Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# Configuración de logging
+logging:
+  level:
+    root: ${LOGGING_LEVEL_ROOT}
+    "[edu.pe.vallegrande.AuthenticationService]": ${LOGGING_LEVEL_ROOT}
+    "[io.r2dbc.postgresql]": INFO
+    "[io.r2dbc.pool]": INFO
+    "[org.springframework.r2dbc]": INFO
+    "[org.springframework.security]": INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/authentication-service.log
+    max-size: 10MB
+    max-history: 30

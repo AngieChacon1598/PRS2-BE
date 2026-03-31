@@ -1,0 +1,55 @@
+spring:
+  # R2DBC Database
+  r2dbc:
+    url: ${DATABASE_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    pool:
+      enabled: true
+      initial-size: 5
+      max-size: 20
+      max-idle-time: 30m
+      max-acquire-time: 3s
+      max-create-connection-time: 3s
+      validation-query: SELECT 1
+
+  data:
+    redis:
+      url: ${REDIS_URL}
+      ssl:
+        enabled: ${REDIS_SSL}
+
+  logging:
+    level:
+      org.springframework.r2dbc: DEBUG
+      org.springframework.web: DEBUG
+      org.springframework.http.converter: TRACE
+      pe.edu.vallegrande.ms_inventory: TRACE
+
+  # Seguridad JWT (Keycloak)
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_URL}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui/index.html
+    url: /v3/api-docs
+  use-fallback-default-response: true
+  show-actuator: true
+
+server:
+  port: ${SERVER_PORT}
+
+# Configuración de servicios externos
+services:
+  asset:
+    url: ${ASSET_URL}
+  configuration:
+    url: ${CONFIG_URL}
+  user:
+    url: ${USER_URL}

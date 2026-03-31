@@ -1,0 +1,51 @@
+server:
+  port: ${SERVER_PORT}
+
+spring:
+  application:
+    name: ms-maintenanceService
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}
+
+  r2dbc:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    properties:
+      tcpKeepAlive: true
+    pool:
+      initial-size: 10
+      max-size: 20
+      max-idle-time: 30m
+      validation-query: SELECT 1
+
+  data:
+    redis:
+      url: ${REDIS_URL}
+      ssl:
+        enabled: ${REDIS_SSL}
+
+# Configuración de logging
+logging:
+  level:
+    root: INFO
+    "[pe.edu.vallegrande]": DEBUG
+    "[io.r2dbc.postgresql]": WARN
+    "[io.r2dbc.postgresql.client.ReactorNettyClient]": ERROR
+    "[io.r2dbc.postgresql.util.FluxDiscardOnCancel]": ERROR
+    "[org.springframework.r2dbc]": INFO
+    "[reactor.netty]": WARN
+
+# Configuración de Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized

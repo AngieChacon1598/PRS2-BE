@@ -1,0 +1,1295 @@
+{
+  "info": {
+    "name": "Patrimonio Service API",
+    "description": "Colección completa de endpoints para el microservicio de Patrimonio",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "patrimonio-service"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5003/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "keycloakUrl",
+      "value": "https://lab.vallegrande.edu.pe/keycloak",
+      "type": "string"
+    },
+    {
+      "key": "keycloakRealm",
+      "value": "sipreb",
+      "type": "string"
+    },
+    {
+      "key": "keycloakClientId",
+      "value": "admin-cli",
+      "type": "string"
+    },
+    {
+      "key": "keycloakUsername",
+      "value": "williamsdev",
+      "type": "string"
+    },
+    {
+      "key": "keycloakPassword",
+      "value": "Admin2026",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Get Keycloak Token",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest({",
+                  "    url: pm.variables.get('keycloakUrl') + '/realms/' + pm.variables.get('keycloakRealm') + '/protocol/openid-connect/token',",
+                  "    method: 'POST',",
+                  "    header: {",
+                  "        'Content-Type': 'application/x-www-form-urlencoded'",
+                  "    },",
+                  "    body: {",
+                  "        mode: 'urlencoded',",
+                  "        urlencoded: [",
+                  "            { key: 'client_id', value: pm.variables.get('keycloakClientId') },",
+                  "            { key: 'grant_type', value: 'password' },",
+                  "            { key: 'username', value: pm.variables.get('keycloakUsername') },",
+                  "            { key: 'password', value: pm.variables.get('keycloakPassword') }",
+                  "        ]",
+                  "    }",
+                  "}, function (err, res) {",
+                  "    if (err) {",
+                  "        console.log(err);",
+                  "    } else {",
+                  "        var jsonData = res.json();",
+                  "        pm.variables.set('authToken', 'Bearer ' + jsonData.access_token);",
+                  "        console.log('Token obtained successfully');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "client_id",
+                  "value": "{{keycloakClientId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "{{keycloakUsername}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{keycloakPassword}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{keycloakUrl}}/realms/{{keycloakRealm}}/protocol/openid-connect/token",
+              "host": ["{{keycloakUrl}}"],
+              "path": ["realms", "{{keycloakRealm}}", "protocol", "openid-connect", "token"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Areas",
+      "item": [
+        {
+          "name": "Get All Areas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/areas",
+              "host": ["{{baseUrl}}"],
+              "path": ["areas"]
+            }
+          }
+        },
+        {
+          "name": "Get Area by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/areas/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["areas", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "e7a1f8b2-9f2a-4b3e-8a2d-1f2a3c4d5e6f"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "a1b2c3d4-e5f6-7a89-b012-3456789abcd"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Locations",
+      "item": [
+        {
+          "name": "Get All Locations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/locations",
+              "host": ["{{baseUrl}}"],
+              "path": ["locations"]
+            }
+          }
+        },
+        {
+          "name": "Get Location by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/locations/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["locations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "11111111-2222-3333-4444-555555555555"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Responsible",
+      "item": [
+        {
+          "name": "Get All Responsible",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/responsible",
+              "host": ["{{baseUrl}}"],
+              "path": ["responsible"]
+            }
+          }
+        },
+        {
+          "name": "Get Responsible by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/responsible/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["responsible", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "22222222-3333-4444-5555-666666666666"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Suppliers",
+      "item": [
+        {
+          "name": "Get All Suppliers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/suppliers",
+              "host": ["{{baseUrl}}"],
+              "path": ["suppliers"]
+            }
+          }
+        },
+        {
+          "name": "Get Supplier by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/suppliers/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["suppliers", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "99999999-aaaa-bbbb-cccc-dddddddddddd"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Assets",
+      "item": [
+        {
+          "name": "Create Asset",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assetCode\": \"ASSET-001\",\n  \"name\": \"Laptop Dell\",\n  \"description\": \"Laptop para oficina\",\n  \"categoryId\": \"a1b2c3d4-e5f6-7a89-b012-3456789abcd\",\n  \"supplierId\": \"99999999-aaaa-bbbb-cccc-dddddddddddd\",\n  \"responsibleId\": \"22222222-3333-4444-5555-666666666666\",\n  \"locationId\": \"11111111-2222-3333-4444-555555555555\",\n  \"acquisitionValue\": 1500.00,\n  \"residualValue\": 300.00,\n  \"usefulLifeMonths\": 36,\n  \"acquisitionDate\": \"2024-01-15T00:00:00\",\n  \"status\": \"ACTIVO\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assets",
+              "host": ["{{baseUrl}}"],
+              "path": ["assets"]
+            }
+          }
+        },
+        {
+          "name": "Get Asset by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/assets/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["assets", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Assets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/assets",
+              "host": ["{{baseUrl}}"],
+              "path": ["assets"]
+            }
+          }
+        },
+        {
+          "name": "Update Asset",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assetCode\": \"ASSET-001\",\n  \"name\": \"Laptop Dell Actualizada\",\n  \"description\": \"Laptop para oficina actualizada\",\n  \"categoryId\": \"a1b2c3d4-e5f6-7a89-b012-3456789abcd\",\n  \"supplierId\": \"99999999-aaaa-bbbb-cccc-dddddddddddd\",\n  \"responsibleId\": \"22222222-3333-4444-5555-666666666666\",\n  \"locationId\": \"11111111-2222-3333-4444-555555555555\",\n  \"acquisitionValue\": 1500.00,\n  \"residualValue\": 300.00,\n  \"usefulLifeMonths\": 36,\n  \"acquisitionDate\": \"2024-01-15T00:00:00\",\n  \"status\": \"ACTIVO\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assets/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["assets", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Asset",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/assets/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["assets", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Change Asset Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newStatus\": \"INACTIVO\",\n  \"changedBy\": \"22222222-3333-4444-5555-666666666666\",\n  \"reason\": \"Activo dado de baja\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assets/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["assets", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Assets by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/assets/status/:status",
+              "host": ["{{baseUrl}}"],
+              "path": ["assets", "status", ":status"],
+              "variable": [
+                {
+                  "key": "status",
+                  "value": "ACTIVO"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Asset by Code",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/assets/code/:assetCode",
+              "host": ["{{baseUrl}}"],
+              "path": ["assets", "code", ":assetCode"],
+              "variable": [
+                {
+                  "key": "assetCode",
+                  "value": "ASSET-001"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Asset Disposals",
+      "item": [
+        {
+          "name": "Create Asset Disposal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fileNumber\": \"EXP-2024-001\",\n  \"disposalType\": \"BAJA\",\n  \"requestedBy\": \"22222222-3333-4444-5555-666666666666\",\n  \"requestDate\": \"2024-11-01T00:00:00\",\n  \"justification\": \"Equipos obsoletos\",\n  \"status\": \"PENDIENTE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposals",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposals"]
+            }
+          }
+        },
+        {
+          "name": "Get Asset Disposal by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposals/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposals", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Asset Disposals",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposals",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposals"]
+            }
+          }
+        },
+        {
+          "name": "Get Asset Disposals by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposals/status/:status",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposals", "status", ":status"],
+              "variable": [
+                {
+                  "key": "status",
+                  "value": "PENDIENTE"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Asset Disposal by File Number",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposals/file-number/:fileNumber",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposals", "file-number", ":fileNumber"],
+              "variable": [
+                {
+                  "key": "fileNumber",
+                  "value": "EXP-2024-001"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Asset Disposals by User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposals/requested-by/:userId",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposals", "requested-by", ":userId"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Assign Committee",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"committeeMembers\": [\"user-id-1\", \"user-id-2\", \"user-id-3\"],\n  \"assignedBy\": \"22222222-3333-4444-5555-666666666666\",\n  \"assignedDate\": \"2024-11-05T00:00:00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposals/:id/assign-committee",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposals", ":id", "assign-committee"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Resolve Disposal",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resolutionNumber\": \"RES-2024-001\",\n  \"resolutionDate\": \"2024-11-10T00:00:00\",\n  \"approvedBy\": \"22222222-3333-4444-5555-666666666666\",\n  \"observations\": \"Aprobado para baja\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposals/:id/resolve",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposals", ":id", "resolve"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel Disposal",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposals/:id/cancel?cancelledBy=:userId",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposals", ":id", "cancel"],
+              "query": [
+                {
+                  "key": "cancelledBy",
+                  "value": ":userId"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                },
+                {
+                  "key": "userId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Finalize Disposal",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposals/:id/finalize",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposals", ":id", "finalize"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Disposal",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposals/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposals", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Asset Disposal Details",
+      "item": [
+        {
+          "name": "Create Disposal Detail",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"disposalId\": \"disposal-uuid-here\",\n  \"assetId\": \"asset-uuid-here\",\n  \"currentCondition\": \"BUENO\",\n  \"reasonForDisposal\": \"Obsoleto\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposal-details",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposal-details"]
+            }
+          }
+        },
+        {
+          "name": "Get Disposal Detail by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposal-details/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposal-details", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Details by Disposal ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposal-details/disposal/:disposalId",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposal-details", "disposal", ":disposalId"],
+              "variable": [
+                {
+                  "key": "disposalId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Details by Asset ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposal-details/asset/:assetId",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposal-details", "asset", ":assetId"],
+              "variable": [
+                {
+                  "key": "assetId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Technical Opinion",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"technicalOpinion\": \"El activo no puede ser reparado\",\n  \"evaluatedBy\": \"user-uuid-here\",\n  \"evaluationDate\": \"2024-11-08T00:00:00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposal-details/:id/technical-opinion",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposal-details", ":id", "technical-opinion"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Execute Removal",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"removalDate\": \"2024-11-15T00:00:00\",\n  \"executedBy\": \"user-uuid-here\",\n  \"disposalMethod\": \"DONACION\",\n  \"observations\": \"Donado a institución educativa\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposal-details/:id/execute-removal",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposal-details", ":id", "execute-removal"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Disposal Detail",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asset-disposal-details/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["asset-disposal-details", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Depreciations",
+      "item": [
+        {
+          "name": "Create Depreciation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assetId\": \"asset-uuid-here\",\n  \"fiscalYear\": 2024,\n  \"calculationMonth\": 11,\n  \"monthlyDepreciation\": 41.67,\n  \"accumulatedDepreciation\": 458.37,\n  \"bookValue\": 1041.63,\n  \"status\": \"CALCULADO\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/depreciations",
+              "host": ["{{baseUrl}}"],
+              "path": ["depreciations"]
+            }
+          }
+        },
+        {
+          "name": "Get All Depreciations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/depreciations",
+              "host": ["{{baseUrl}}"],
+              "path": ["depreciations"]
+            }
+          }
+        },
+        {
+          "name": "Get Depreciations by Asset ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/depreciations/asset/:assetId",
+              "host": ["{{baseUrl}}"],
+              "path": ["depreciations", "asset", ":assetId"],
+              "variable": [
+                {
+                  "key": "assetId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Depreciations by Fiscal Year",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/depreciations/year/:fiscalYear",
+              "host": ["{{baseUrl}}"],
+              "path": ["depreciations", "year", ":fiscalYear"],
+              "variable": [
+                {
+                  "key": "fiscalYear",
+                  "value": "2024"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Depreciation by Asset and Period",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/depreciations/asset/:assetId/year/:fiscalYear/month/:calculationMonth",
+              "host": ["{{baseUrl}}"],
+              "path": ["depreciations", "asset", ":assetId", "year", ":fiscalYear", "month", ":calculationMonth"],
+              "variable": [
+                {
+                  "key": "assetId",
+                  "value": ""
+                },
+                {
+                  "key": "fiscalYear",
+                  "value": "2024"
+                },
+                {
+                  "key": "calculationMonth",
+                  "value": "11"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Depreciation",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/depreciations/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["depreciations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Approve Depreciation",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/depreciations/:id/approve?approvedBy=:userId",
+              "host": ["{{baseUrl}}"],
+              "path": ["depreciations", ":id", "approve"],
+              "query": [
+                {
+                  "key": "approvedBy",
+                  "value": ":userId"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                },
+                {
+                  "key": "userId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Generate Automatic Depreciations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/depreciations/auto/:assetId?initialValue=1500.00&residualValue=300.00&usefulLifeMonths=36&acquisitionDate=2024-01-15T00:00:00",
+              "host": ["{{baseUrl}}"],
+              "path": ["depreciations", "auto", ":assetId"],
+              "query": [
+                {
+                  "key": "initialValue",
+                  "value": "1500.00"
+                },
+                {
+                  "key": "residualValue",
+                  "value": "300.00"
+                },
+                {
+                  "key": "usefulLifeMonths",
+                  "value": "36"
+                },
+                {
+                  "key": "acquisitionDate",
+                  "value": "2024-01-15T00:00:00"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "assetId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

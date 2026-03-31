@@ -1,0 +1,27 @@
+server:
+  port: ${SERVER_PORT:5001}
+
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://ep-old-shape-ady5hm5f-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=VERIFY_FULL
+    username:  ${DB_USERNAME:neondb_owner}
+    password:  ${DB_PASSWORD:npg_BqPyFXQ45YUS}
+
+  sql:
+    init:
+      mode: always
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/vallegrande}
+          firebase:
+            issuer-uri: ${FIREBASE_ISSUER_URI:https://securetoken.google.com/vallegrande-project}
+          supabase:
+            issuer-uri: ${SUPABASE_ISSUER_URI:https://uannlnmvkwrfpyimaaby.supabase.co/auth/v1}
+
+services:
+  auth:
+    url: ${AUTH_SERVICE_URL:https://lab.vallegrande.edu.pe/authentication}

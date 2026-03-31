@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vg-backend
+    environment:
+      SPRING_R2DBC_URL: ${DB_URL:r2dbc:postgresql://neondb_owner:npg_JD4jeC7SIPom@ep-snowy-dream-ad4r62wl-pooler.c-2.us-east-1.aws.neon.tech:5432/neondb?sslMode=VERIFY_FULL}
+      SPRING_R2DBC_USERNAME: ${DB_USERNAME:neondb_owner}
+      SPRING_R2DBC_PASSWORD: ${DB_PASSWORD:npg_JD4jeC7SIPom}
+      SERVER_PORT: ${SERVER_PORT:5003}
+      SPRING_APPLICATION_NAME: patrimonio-service
+      SPRING_MAIN_WEB_APPLICATION_TYPE: reactive
+      MS_CONFIGURATIONSERVICE_URL: http://localhost:5004/api/v1
+    ports:
+      - "5003:5003"
+    networks:
+      - vg-network
+
+networks:
+  vg-network:
+    driver: bridge

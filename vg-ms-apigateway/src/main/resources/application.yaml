@@ -1,0 +1,78 @@
+# ==============================================================================
+# CONFIGURACIÓN BASE (Compartida)
+# ==============================================================================
+server:
+  port: ${SERVER_PORT:5000}
+
+spring:
+  application:
+    name: vg-ms-apiGateway
+
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          "[/**]":
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+            allowedHeaders: "*"
+      
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+
+      routes:
+        # MS-02: Authentication Service
+        - id: auth-service
+          uri: ${AUTH_SERVICE_URL:http://localhost:5002}
+          predicates:
+            - Path=/api/v1/auth/**, /api/v1/users/**, /api/v1/persons/**, /api/v1/roles/**, /api/v1/permissions/**
+          # El filtro solo se aplica si la url apunta al servidor production. Para eso podemos usar un pequeño truco
+          # O simplemente configuramos el Ingress del servidor para no requerir PrefixPath
+        
+        # MS-01: Tenant Management Service
+        - id: tenant-service
+          uri: ${TENANT_SERVICE_URL:http://localhost:5001}
+          predicates:
+            - Path=/api/v1/tenants/**, /api/v1/municipalities/**
+
+        # MS-03: Configuration Service 
+        - id: configuration-service
+          uri: ${CONFIG_SERVICE_URL:http://localhost:5004}
+          predicates:
+            - Path=/api/v1/config/**, /api/v1/areas/**, /api/v1/positions/**, /api/v1/document-types/**, /api/v1/categories-assets/**, /api/v1/physical-locations/**, /api/v1/suppliers/**, /api/v1/system-configurations/**
+
+        # MS-04: Patrimonio Service
+        - id: patrimonio-service
+          uri: ${PATRIMONIO_SERVICE_URL:http://localhost:5003}
+          predicates:
+            - Path=/api/v1/assets/**, /api/v1/patrimonio/**, /api/v1/bienes/**
+
+        # MS-05: Movement Service
+        - id: movement-service
+          uri: ${MOVEMENT_SERVICE_URL:http://localhost:5005}
+          predicates:
+            - Path=/api/v1/asset-movements/**, /api/v1/handover-receipts/**
+
+        # MS-06: Inventory Service 
+        - id: inventory-service
+          uri: ${INVENTORY_SERVICE_URL:http://localhost:5006}
+          predicates:
+            - Path=/api/v1/inventories/**, /api/v1/inventory-details/**
+
+        # MS-07: Mantenimiento Service 
+        - id: mantenimiento-service
+          uri: ${MANTENIMIENTO_SERVICE_URL:http://localhost:5007}
+          predicates:
+            - Path=/api/v1/mantenimiento/**
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.security: DEBUG
+    pe.edu.vallegrande: DEBUG

@@ -1,0 +1,35 @@
+# Directorios de build
+target/
+!target/*.jar
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Documentación
+README.md
+HELP.md
+*.md
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore

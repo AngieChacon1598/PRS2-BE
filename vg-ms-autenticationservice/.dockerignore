@@ -1,0 +1,68 @@
+# Directorios de compilación y dependencias
+target/
+.mvn/wrapper/maven-wrapper.jar
+dependency-reduced-pom.xml
+
+# IDEs y Configuración del Editor
+.idea/
+.vscode/
+.settings/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.factorypath
+
+# Logs y Archivos de Diagnóstico
+logs/
+*.log
+*.pid
+*.seed
+*.lock
+
+# Sistema Operativo
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+.gitattributes
+.gitmodules
+
+# Docker y Despliegue
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+*.env
+*.env.*
+
+# Documentación
+README.md
+HELP.md
+*.md
+docs/
+
+# Archivos Temporales y Caché
+*.tmp
+*.bak
+*.cache
+*.old
+*.orig
+
+# Archivos Comprimidos y Ejecutables (si existen localmente)
+*.zip
+*.tar.gz
+*.rar
+*.jar
+*.war
+*.ear
+!mvnw
+!mvnw.cmd

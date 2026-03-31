@@ -1,0 +1,37 @@
+{"properties": [
+  {
+    "name": "spring.r2dbc.pool.[initial-size]",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.r2dbc.pool.[initial-size]'"
+  },
+  {
+    "name": "spring.r2dbc.pool.[max-size]",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.r2dbc.pool.[max-size]'"
+  },
+  {
+    "name": "spring.r2dbc.pool.[max-idle-time]",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.r2dbc.pool.[max-idle-time]'"
+  },
+  {
+    "name": "spring.r2dbc.pool.[validation-query]",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.r2dbc.pool.[validation-query]'"
+  },
+  {
+    "name": "spring.r2dbc.pool.[max-life-time]",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.r2dbc.pool.[max-life-time]'"
+  },
+  {
+    "name": "spring.r2dbc.pool.[max-acquire-time]",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.r2dbc.pool.[max-acquire-time]'"
+  },
+  {
+    "name": "spring.r2dbc.pool.[max-create-connection-time]",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.r2dbc.pool.[max-create-connection-time]'"
+  }
+]}

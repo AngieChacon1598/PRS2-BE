@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: configurationservice
+
+  r2dbc:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    pool:
+      enabled: true
+      initial-size: 5
+      max-size: 10
+    properties:
+      sslMode: require
+      preparedStatementCacheQueries: 0
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:https://auth.vallegrande.edu.pe/realms/sipreb}
+
+  data:
+    redis:
+      url: ${REDIS_URL:redis://localhost:6379}
+
+redis:
+  enabled: ${REDIS_ENABLED:false}
+
+  main:
+    web-application-type: reactive
+
+logging:
+  level:
+    root: INFO
+    org.springframework.r2dbc: WARN
+    org.springframework.data.r2dbc: WARN
+    reactor.core.publisher: WARN
+
+server:
+  port: 5004
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha

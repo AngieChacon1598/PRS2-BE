@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: ${APP_NAME:patrimonio-service}
+  
+  main:
+    web-application-type: reactive
+
+  # Configuración de Base de Datos Reactiva (R2DBC)
+  r2dbc:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    pool:
+      enabled: ${DB_POOL_ENABLED:true}
+      initial-size: ${DB_POOL_INITIAL_SIZE:5}
+      max-size: ${DB_POOL_MAX_SIZE:20}
+      max-idle-time: ${DB_POOL_MAX_IDLE:30m}
+      validation-query: SELECT 1
+
+  # Configuración de Seguridad (Keycloak/OAuth2)
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI}
+          jwk-set-uri: ${KEYCLOAK_JWKS_URI}
+
+# Configuración de Servidor
+server:
+  port: ${SERVER_PORT:5003}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+
+
+# CONFIGURACIÓN DE LOGS (Crucial para ver el error 400/500)
+logging:
+  level:
+    root: INFO
+    # Ver errores de permisos/roles
+    org.springframework.security: DEBUG
+    # Ver qué pide y qué recibe el WebClient
+    org.springframework.web.reactive.function.client.WebClient: DEBUG
+    # Ver la comunicación de red de bajo nivel (Netty)
+    reactor.netty.http.client: DEBUG
+    # Ver errores de tu propio código
+    pe.edu.vallegrande.patrimonio_service: DEBUG
