@@ -1,10 +1,5 @@
 services:
 
-  # ---------------- REDIS ----------------
-  - type: redis
-    name: vg-redis
-    ipAllowList: []
-
   # ---------------- AUTH SERVICE ----------------
   - type: web
     name: auth-service
@@ -32,36 +27,8 @@ services:
         value: sipreb-backend
       - key: KEYCLOAK_CLIENT_SECRET
         sync: false
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: vg-redis
-          property: connectionString
       - key: JWT_SECRET
         sync: false
-
-  # ---------------- CONFIG SERVICE ----------------
-  - type: web
-    name: configurationservice
-    env: docker
-    plan: free
-    dockerfilePath: ./configurationservice/Dockerfile
-    envVars:
-      - key: SERVER_PORT
-        value: 5004
-      - key: DB_URL
-        value: r2dbc:postgresql://ep-summer-cloud-adbsahn8-pooler.c-2.us-east-1.aws.neon.tech/neondb
-      - key: DB_USERNAME
-        value: neondb_owner
-      - key: DB_PASSWORD
-        sync: false
-      - key: KEYCLOAK_ISSUER_URI
-        value: https://lab.vallegrande.edu.pe/keycloak/realms/sipreb
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: vg-redis
-          property: connectionString
 
   # ---------------- PATRIMONIO ----------------
   - type: web
@@ -81,74 +48,6 @@ services:
       - key: KEYCLOAK_ISSUER_URI
         value: https://lab.vallegrande.edu.pe/keycloak/realms/sipreb
 
-  # ---------------- MOVEMENT ----------------
-  - type: web
-    name: movement-service
-    env: docker
-    plan: free
-    dockerfilePath: ./movement-service/Dockerfile
-    envVars:
-      - key: SERVER_PORT
-        value: 5005
-      - key: DB_URL
-        value: r2dbc:postgresql://ep-small-pine-a4vgqevg-pooler.us-east-1.aws.neon.tech/neondb
-      - key: DB_USERNAME
-        value: neondb_owner
-      - key: DB_PASSWORD
-        sync: false
-      - key: USER_SERVICE_URL
-        value: https://auth-service.onrender.com
-      - key: PATRIMONIO_SERVICE_URL
-        value: https://patrimonio-service.onrender.com
-
-  # ---------------- INVENTORY ----------------
-  - type: web
-    name: inventory-service
-    env: docker
-    plan: free
-    dockerfilePath: ./inventory-service/Dockerfile
-    envVars:
-      - key: SERVER_PORT
-        value: 5006
-      - key: DATABASE_URL
-        value: r2dbc:postgresql://ep-fragrant-cell-a4yrhw50-pooler.us-east-1.aws.neon.tech:5432/neondb
-      - key: DB_USERNAME
-        value: neondb_owner
-      - key: DB_PASSWORD
-        sync: false
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: vg-redis
-          property: connectionString
-      - key: ASSET_URL
-        value: https://patrimonio-service.onrender.com
-      - key: CONFIG_URL
-        value: https://configurationservice.onrender.com
-      - key: USER_URL
-        value: https://auth-service.onrender.com
-
-  # ---------------- MAINTENANCE ----------------
-  - type: web
-    name: ms-maintenanceService
-    env: docker
-    plan: free
-    dockerfilePath: ./ms-maintenanceService/Dockerfile
-    envVars:
-      - key: SERVER_PORT
-        value: 5007
-      - key: DB_URL
-        value: r2dbc:postgresql://ep-misty-haze-ac4ozmj7-pooler.sa-east-1.aws.neon.tech:5432/vg-ms-maintenance
-      - key: DB_USERNAME
-        value: neondb_owner
-      - key: DB_PASSWORD
-        sync: false
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: vg-redis
-          property: connectionString
-
   # ---------------- API GATEWAY ----------------
   - type: web
     name: api-gateway
@@ -160,13 +59,5 @@ services:
         value: 5000
       - key: AUTH_SERVICE_URL
         value: https://auth-service.onrender.com
-      - key: CONFIG_SERVICE_URL
-        value: https://configurationservice.onrender.com
-      - key: MOVEMENT_SERVICE_URL
-        value: https://movement-service.onrender.com
       - key: PATRIMONIO_SERVICE_URL
         value: https://patrimonio-service.onrender.com
-      - key: INVENTORY_SERVICE_URL
-        value: https://inventory-service.onrender.com
-      - key: MANTENIMIENTO_SERVICE_URL
-        value: https://ms-maintenanceService.onrender.com
